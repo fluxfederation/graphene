@@ -9,16 +9,11 @@ module Graphene
       alias :fill_color    :fill_colour
       alias :fill_color=   :fill_colour=
 
-      def initialize(dataset, opts = {})
+      def initialize(dataset, start, step)
         super()
 
-        opts.stringify_keys!
-        if (opts.keys - %w(start step)).any?
-          raise ArgumentError, "Unrecognised option passed into Graphene::Views::Line.initialize"
-        end
-
-        if x_value = opts["start"]
-          step = opts["step"] || 1
+        if x_value = start
+          step ||= 1
           @dataset = new_dataset = []
           dataset.each do |y_value|
             new_dataset << [x_value, y_value] if y_value
@@ -117,7 +112,7 @@ module Graphene
           end
 
           canvas.group({:'data-name' => @line.name, :'data-type' => 'line', :'data-left' => left, :'data-top' => top, :'data-width' => width, :'data-height' => height, :'data-data' => points.to_json, :style => "clip-path: url(#line-clip-#{object_id});"}) do
-            if instructions.present?
+            if instructions && instructions.length > 0
               canvas.path(instructions, :stroke => @line.stroke_colour, :fill => "none", "stroke-opacity" => @line.stroke_opacity, "stroke-width" => @line.stroke_width)
             end
 

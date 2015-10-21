@@ -59,9 +59,10 @@ chart.plot [[Time.local(2010, 9, 1), 18],
   plot.stroke_width = 2
 end
 
-chart.histogram [10, -3, 15, 18, 9], Time.local(2010, 9, 1), 14 * 86400,
-  :name => "Cheese demand",
-  :fill_opacity => 0.2
+chart.histogram [10, -3, 15, 18, 9], Time.local(2010, 9, 1), 14 * 86400 do |hist|
+  hist.name = "Cheese demand"
+  hist.fill_opacity = 0.2
+end
 
 #output = chart.render_with_canvas(Graphene::Canvases::Debug.new(chart))
 #puts output.output

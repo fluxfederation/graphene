@@ -23,6 +23,7 @@ end
 
 require 'builder'
 require 'bigdecimal'
+require 'json'
 
 require 'graphene/version'
 

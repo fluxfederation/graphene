@@ -6,16 +6,11 @@ module Graphene
       alias :fill_color  :fill_colour
       alias :fill_color= :fill_colour=
 
-      def initialize(dataset, opts = {})
+      def initialize(dataset, start, step)
         super()
 
-        opts.stringify_keys!
-        if (opts.keys - %w(start step)).any?
-          raise ArgumentError, "Unrecognised option passed into Graphene::Views::Area.initialize"
-        end
-
-        if x_value = opts["start"]
-          step = opts["step"] || 1
+        if x_value = start
+          step = step || 1
           @dataset = new_dataset = []
           dataset.each do |y_value|
             new_dataset << [x_value, y_value] if y_value
@@ -65,10 +60,10 @@ module Graphene
           rects = []
           sorted.each_with_index do |(x_value, y_value), index|
             x1, y1 = @point_mapper.values_to_coordinates(@area.axis, x_value, y_value, width, height)
-            x2, y1 = @point_mapper.values_to_coordinates(@area.axis, sorted[index+1].try(:first), y_value, width, height)
+            x2, y1 = @point_mapper.values_to_coordinates(@area.axis, sorted[index+1] && sorted[index+1].first, y_value, width, height)
             x1 = 0 if x1 < 0
 
-            next if x2.blank? || x2 == x1 || x2 < 0 || x1 > width
+            next if x2.nil? || x2 == x1 || x2 < 0 || x1 > width
 
             w = x2 - x1# + 1
             w = width - x1 if w + x1 > width
@@ -80,7 +75,7 @@ module Graphene
             end
 
             rects << {:x => x1+left, :y => y1+top, :width => w, :height => h,
-                      :x_value => x_value, :x2_value => sorted[index+1].try(:first), :y_value => y_value}
+                      :x_value => x_value, :x2_value => sorted[index+1] && sorted[index+1].first, :y_value => y_value}
           end
 
           canvas.group({:'data-name' => @area.name, :'data-type' => 'area', :'data-left' => left, :'data-top' => top, :'data-width' => width, :'data-height' => height, :'data-data' => rects.to_json}) do

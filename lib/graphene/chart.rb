@@ -51,24 +51,16 @@ module Graphene
       @legend_position = value
     end
 
-    def plot(dataset, options = {})
-      line_options = {}
-      line_options[:start] = options.delete(:start) if options.member?(:start)
-      line_options[:step] = options.delete(:step) if options.member?(:step)
-
-      Views::Line.new(dataset, line_options).tap do |line|
+    def plot(dataset, start = nil, step = nil, options = {})
+      Views::Line.new(dataset, start, step).tap do |line|
         options.each {|k, v| line.send("#{k}=", v)}
         @views << line
         yield line if block_given?
       end
     end
 
-    def area(dataset, options = {})
-      line_options = {}
-      line_options[:start] = options.delete(:start) if options.member?(:start)
-      line_options[:step] = options.delete(:step) if options.member?(:step)
-
-      Views::Area.new(dataset, line_options).tap do |line|
+    def area(dataset, start = nil, step = nil, options = {})
+      Views::Area.new(dataset, start, step).tap do |line|
         options.each {|k, v| line.send("#{k}=", v)}
         @views << line
         yield line if block_given?

@@ -24,6 +24,8 @@ end
 require 'builder'
 require 'bigdecimal'
 
+require 'graphene/version'
+
 require 'graphene/renderable'
 require 'graphene/positioned'
 require 'graphene/boxes'

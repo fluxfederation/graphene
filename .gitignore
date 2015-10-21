@@ -1,4 +1,13 @@
-.DS_Store
 .*.swp
+.DS_Store
 .sw?
-lib/test.svg
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/lib/test.svg
+/pkg/
+/spec/reports/
+/tmp/

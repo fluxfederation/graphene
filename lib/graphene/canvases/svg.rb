@@ -62,7 +62,7 @@ module Graphene
       end
 
       def box(x, y, w, h, opts = {})
-        @builder.rect opts.merge(:x => x, :y => y, :width => w, :height => h).reject {|k, v| v.nil?}
+        @builder.rect opts.merge(:x => x, :y => y, :width => w, :height => h, :'shape-rendering' => 'crispEdges').reject {|k, v| v.nil?}
       end
 
       def text(x, y, text, opts = {})

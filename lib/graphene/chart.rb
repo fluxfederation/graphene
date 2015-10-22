@@ -73,9 +73,10 @@ module Graphene
         new_set = []
         x_values.each do |x_value|
           i = dataset.index { |data_x_value, _| data_x_value >= x_value }
-          if i && dataset[i][0] == x_value
+          next unless i
+          if dataset[i][0] == x_value
             new_set << [x_value, dataset[i][1]]
-          elsif i && i-1 > 0 && dataset[i-1] && dataset[i][0] > x_value
+          elsif i-1 >= 0 && dataset[i-1] && dataset[i][0] > x_value
             weight = (x_value - dataset[i-1][0]).to_f / (dataset[i][0] - dataset[i-1][0]).to_f
             new_set << [x_value, dataset[i-1][1] + (dataset[i][1] - dataset[i-1][1]) * weight]
           end

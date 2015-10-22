@@ -1,14 +1,16 @@
 module Graphene
   module Views
     class Area < Base
-      attr_reader :stack_on, :stacked_dataset
+      attr_reader :offsets
       attr_accessor :fill_colour, :fill_opacity, :hilight_color
 
       alias :fill_color  :fill_colour
       alias :fill_color= :fill_colour=
 
-      def initialize(dataset, start, step, stack_on = nil)
+      def initialize(dataset, start, step, offsets=Hash.new{|h,k| 0})
         super()
+
+        @offsets = offsets
 
         if x_value = start
           step = step || 1
@@ -20,21 +22,11 @@ module Graphene
         else
           @dataset = dataset
         end
-
-        if @stack_on = stack_on
-          @stacked_dataset = @dataset.each_with_index.collect do |v, index|
-            [v[0], v[1], stack_on.stacked_dataset[index][1] + stack_on.stacked_dataset[index][2]]
-          end
-        else
-          @stacked_dataset = @dataset.collect do |data|
-            [data[0], data[1], 0]
-          end
-        end
       end
 
       def push_watermark(watermark, type, comparitor)
-        stacked_dataset.each do |x, y, y_offset|
-          value = type == :x ? x : y + y_offset
+        dataset.each do |x, y|
+          value = type == :x ? x : y + offsets[x]
           watermark = value if value && (watermark.nil? || value.send(comparitor, watermark))
         end
         watermark
@@ -63,12 +55,12 @@ module Graphene
 
         def render(canvas, left, top, width, height)
           index_for_sorting = 0
-          sorted = @area.stacked_dataset.to_a.sort_by {|k, v| [k, index_for_sorting += 1]} # see http://bugs.ruby-lang.org/issues/1089#note-10
+          sorted = @area.dataset.to_a.sort_by {|k, v| [k, index_for_sorting += 1]} # see http://bugs.ruby-lang.org/issues/1089#note-10
 
           rects = []
-          sorted.each_with_index do |(x_value, y_value, y_offset), index|
-            x1, y1 = @point_mapper.values_to_coordinates(@area.axis, x_value, y_value + y_offset, width, height)
-            x2, y2 = @point_mapper.values_to_coordinates(@area.axis, sorted[index+1] && sorted[index+1].first, y_offset, width, height)
+          sorted.each_with_index do |(x_value, y_value), index|
+            x1, y1 = @point_mapper.values_to_coordinates(@area.axis, x_value, y_value + @area.offsets[x_value], width, height)
+            x2, y2 = @point_mapper.values_to_coordinates(@area.axis, sorted[index+1] && sorted[index+1].first, @area.offsets[x_value], width, height)
             x1 = 0 if x1 < 0
 
             next if x2.nil? || x2 == x1 || x2 < 0 || x1 > width

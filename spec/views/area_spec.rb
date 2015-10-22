@@ -11,8 +11,6 @@ describe Graphene::Views::Area do
   let(:data2) { [
     [0, 4],
     [1, 1],
-    [2, 5],
-    [3, 2],
   ] }
 
   it "renders some boxes" do
@@ -31,14 +29,14 @@ describe Graphene::Views::Area do
 
   it "renders some stacked boxes" do
     chart = Graphene::Chart.new
-    area1, area2 = chart.stacked_area [data, data2]
+    area1, area2 = chart.stacked_area [data2, data]
 
     point_mapper = Graphene::PointMapper.new(:bottom, :left)
     point_mapper.charts << chart
     point_mapper.x_axis_offset_in_units = 0
 
     expect(canvas).to receive(:group).and_yield
-    expect(canvas).to receive(:box).exactly(3).times
+    expect(canvas).to receive(:box).exactly(1).times
     area1.layout(point_mapper).render(canvas, 0, 0, 600, 400)
 
     expect(canvas).to receive(:group).and_yield

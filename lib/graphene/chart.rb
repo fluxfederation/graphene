@@ -78,21 +78,21 @@ module Graphene
           elsif i && i-1 > 0 && dataset[i-1] && dataset[i][0] > x_value
             weight = (x_value - dataset[i-1][0]).to_f / (dataset[i][0] - dataset[i-1][0]).to_f
             new_set << [x_value, dataset[i-1][1] + (dataset[i][1] - dataset[i-1][1]) * weight]
-          else
-            new_set << [x_value, 0]
           end
         end
         new_set
       end
-      raise "datasets must be the same length!" unless datasets.all? {|dataset| dataset.length == datasets.first.length}
+      offsets = Hash.new{|h,k| 0}
       stack = []
-      last_dataset = nil
       datasets.each_with_index do |dataset, index|
-        last_dataset = Views::Area.new(dataset, start, step, last_dataset).tap do |area|
+        Views::Area.new(dataset, start, step, offsets.dup).tap do |area|
           options.each {|k, v| area.send("#{k}=", v)}
           @views << area
           stack << area
           yield area, index if block_given?
+          dataset.each do |x_value, y_value|
+            offsets[x_value] += y_value
+          end
         end
       end
       stack

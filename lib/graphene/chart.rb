@@ -60,11 +60,26 @@ module Graphene
     end
 
     def area(dataset, start = nil, step = nil, options = {})
-      Views::Area.new(dataset, start, step).tap do |line|
-        options.each {|k, v| line.send("#{k}=", v)}
-        @views << line
-        yield line if block_given?
+      Views::Area.new(dataset, start, step).tap do |area|
+        options.each {|k, v| area.send("#{k}=", v)}
+        @views << area
+        yield area if block_given?
       end
+    end
+
+    def stacked_area(datasets, start = nil, step = nil, options = {})
+      raise "datasets must be the same length!" unless datasets.all? {|dataset| dataset.length == datasets.first.length}
+      stack = []
+      last_dataset = nil
+      datasets.each_with_index do |dataset, index|
+        last_dataset = Views::Area.new(dataset, start, step, last_dataset).tap do |area|
+          options.each {|k, v| area.send("#{k}=", v)}
+          @views << area
+          stack << area
+          yield area, index if block_given?
+        end
+      end
+      stack
     end
 
     def histogram(dataset, start, step, options = {})

@@ -29,21 +29,14 @@ chart.stacked_area [
   ],
   [
     [Time.new(2010, 01, 01), prng.rand(9) + 1],
-    [Time.new(2010, 01, 03), prng.rand(9) + 1],
     [Time.new(2010, 01, 04), prng.rand(9) + 1],
     [Time.new(2010, 01, 06), prng.rand(9) + 1],
-    [Time.new(2010, 01, 11), prng.rand(9) + 1],
     [Time.new(2010, 01, 20), prng.rand(9) + 1],
     [Time.new(2010, 01, 30), prng.rand(9) + 1],
   ],
   [
-    [Time.new(2010, 01, 01), prng.rand(9) + 1],
     [Time.new(2010, 01, 03), prng.rand(9) + 1],
     [Time.new(2010, 01, 04), prng.rand(9) + 1],
-    [Time.new(2010, 01, 06), prng.rand(9) + 1],
-    [Time.new(2010, 01, 11), prng.rand(9) + 1],
-    [Time.new(2010, 01, 20), prng.rand(9) + 1],
-    [Time.new(2010, 01, 30), prng.rand(9) + 1],
   ],
 ] do |area, index|
   area.name = "Cheese demand #{index}"

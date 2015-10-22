@@ -79,7 +79,7 @@ module Graphene
             h = y2 - y1
             if h > height
               y1 += h - height
-              h = height
+              h = y2 - y1
             end
 
             rects << {:x => x1+left, :y => y1+top, :width => w, :height => h,

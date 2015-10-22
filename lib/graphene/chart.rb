@@ -68,6 +68,22 @@ module Graphene
     end
 
     def stacked_area(datasets, start = nil, step = nil, options = {})
+      x_values = datasets.map{|d| d.map{|x_value, _| x_value}}.flatten.uniq.sort
+      datasets = datasets.map do |dataset|
+        new_set = []
+        x_values.each do |x_value|
+          i = dataset.index { |data_x_value, _| data_x_value >= x_value }
+          if i && dataset[i][0] == x_value
+            new_set << [x_value, dataset[i][1]]
+          elsif i && i-1 > 0 && dataset[i-1] && dataset[i][0] > x_value
+            weight = (x_value - dataset[i-1][0]).to_f / (dataset[i][0] - dataset[i-1][0]).to_f
+            new_set << [x_value, dataset[i-1][1] + (dataset[i][1] - dataset[i-1][1]) * weight]
+          else
+            new_set << [x_value, 0]
+          end
+        end
+        new_set
+      end
       raise "datasets must be the same length!" unless datasets.all? {|dataset| dataset.length == datasets.first.length}
       stack = []
       last_dataset = nil

@@ -14,7 +14,7 @@ module Graphene
       @axis = axis
       @font_size = 14
       @font_weight = 'normal'
-      @color = "000000"
+      @color = "#000000"
       @preferred_width = nil
       @text_anchor = 'middle'
       @horizontal_offset = 0     # -ve to offset right and +ve to offset left

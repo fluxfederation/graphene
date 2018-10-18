@@ -93,7 +93,7 @@ module Graphene
       # as dates have a non-discrete type (rational, in the case of dates) as the different type, and
       # so don't need such a workaround.
       calculated_range = calculated_max - calculated_min
-      calculated_range = BigDecimal.new(calculated_range.to_s) if calculated_range.is_a?(Fixnum) || calculated_range.is_a?(Bignum)
+      calculated_range = BigDecimal.new(calculated_range.to_s) if calculated_range.is_a?(Integer)
       calculated_range/(ticks - 1) if ticks && ticks > 1
     end
 

@@ -3,16 +3,16 @@ module Graphene
     include Renderable
 
     attr_accessor :min, :max, :line_thickness, :line_colour
-    
+
     # number of ticks
     attr_accessor :ticks
-    
+
     # spacing of ticks - would normally only need to set this OR \ticks
     attr_accessor :tick_spacing
-    
+
     # position (in axis value units) of the first tick
     attr_accessor :tick_offset
-    
+
     attr_accessor :tick_colour, :tick_opacity, :tick_thickness, :tick_length, :tick_position, :tick_values
     attr_writer :label, :value_labels, :grid_ticks
     attr_reader :chart, :type
@@ -93,7 +93,7 @@ module Graphene
       # as dates have a non-discrete type (rational, in the case of dates) as the different type, and
       # so don't need such a workaround.
       calculated_range = calculated_max - calculated_min
-      calculated_range = BigDecimal.new(calculated_range.to_s) if calculated_range.is_a?(Integer)
+      calculated_range = BigDecimal(calculated_range.to_s) if calculated_range.is_a?(Integer)
       calculated_range/(ticks - 1) if ticks && ticks > 1
     end
 
